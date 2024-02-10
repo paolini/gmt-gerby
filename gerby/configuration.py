@@ -1,11 +1,17 @@
+import os
+
+BASE_PATH = os.path.dirname(os.path.realpath(__file__))
+
 # configuration for the website
-COMMENTS = "comments.sqlite"
-DATABASE = "stacks.sqlite"
+COMMENTS = os.path.join(BASE_PATH, "comments.sqlite")
+DATABASE = os.path.join(BASE_PATH, "stacks.sqlite")
 UNIT = "section"
 DEPTH = 0
 
 # configuration for the import
-PATH = "stacks"
-PAUX = "stacks.paux"
-TAGS = "stacks.tags"
-PDF = "stacks.pdf"
+PATH = "book"
+PAUX = "book.paux"
+TAGS = "tags"
+PDF = "book.pdf"
+
+print("configuration.py loaded.")

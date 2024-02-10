@@ -1,0 +1,9 @@
+build
+tmp
+gerby.egg-info
+instance
+venv
+gerby/comments.sqlite
+gerby/stacks.sqlite
+*.pyc
+WEB

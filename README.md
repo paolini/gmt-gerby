@@ -1,42 +1,62 @@
-# references
+# repositories
 
+* https://github.com/gerby-project/plastex/
 * https://github.com/gerby-project/gerby-website
 * https://gerby-project.github.io/stacks-instructions
+* https://github.com/stacks/stacks-project
 
-# setup
+forks:
 
-create a virtulenv (only once):
+* https://github.com/paolini/pybtex-gerby
 
+
+# setup static files
+
+```bash
+pushd gerby/static
+git clone https://github.com/sonoisa/XyJax.git
+sed -i -e 's@\[MathJax\]@/static/XyJax@' XyJax/extensions/TeX/xypic.js
+git clone https://github.com/aexmachina/jquery-bonsai
+cp jquery-bonsai/jquery.bonsai.css css/
+popd
 ```
+
+# start development server
+
+prepare virtual environment once:
+
+```bash
 python -m venv venv
+. venv/bin/activate
+git clone https://github.com/paolini/pybtex-gerby.git
+python -m pip install ./pybtex-gerby
+rm -fr pybtex-gerby
+git clone https://github.com/paolini/mdx_bleach
+python -m pip install ./mdx_bleach
+rm -fr mdx_bleach
+python -m pip install -e .
 ```
 
-activate it:
+or activate it if already prepared:
 
-```
+```bash
 . venv/bin/activate
 ```
 
-install the dependencies specified in the setup file:
+# update database
 
-```
-pip install .
-```
+You need the WEB directory built from the gmt-book project with the `build_web.sh` script. Use this command to create the databases.
 
-replace the package `mdx_bleach` with a patched version:
-
-```
-git clone https://github.com/paolini/mdx_bleach
-pip uninstall mdx_bleach
-pip install ./mdx_bleach
-rm -fr ./mdx_bleach
+```bash
+pushd WEB
+python ../gerby/tools update.py
+popd
 ```
 
 # run locally
 
 ```
-cd gerby/tools
-python3 wsgi.py
+python -m flask --app gerby run
 ```
 
 

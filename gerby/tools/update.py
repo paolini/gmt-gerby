@@ -434,6 +434,8 @@ if __name__ == "__main__":
     Comment.create_table()
     log.info("Created COMMENTS database")
 
+  log.info("databases: {} {}".format(gerby.configuration.DATABASE, gerby.configuration.COMMENTS))
+
   # the information on disk
   tags = getTags()
   files = [f for f in os.listdir(gerby.configuration.PATH) if os.path.isfile(os.path.join(gerby.configuration.PATH, f)) and f != "index"] # index is always created

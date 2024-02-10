@@ -1,0 +1,23 @@
+diff --git a/mdx_bleach/extension.py b/mdx_bleach/extension.py
+index 53dc127..55d7afa 100644
+--- a/mdx_bleach/extension.py
++++ b/mdx_bleach/extension.py
+@@ -57,10 +57,7 @@ class BleachExtension(Extension):
+         }
+         super(BleachExtension, self).__init__(**kwargs)
+ 
+-    def extendMarkdown(self, md, md_globals):
+-        if md.safeMode:
+-            raise ImproperlyConfigured("Markdown's safe mode is not supported.")
+-
++    def extendMarkdown(self, md):
+         tags = self.getConfig('tags', ALLOWED_TAGS)
+         attributes = self.getConfig('attributes', ALLOWED_ATTRIBUTES)
+         styles = self.getConfig('styles', ALLOWED_STYLES)
+@@ -70,4 +67,5 @@ class BleachExtension(Extension):
+ 
+         bleach_pp = BleachPostprocessor(md, tags, attributes, styles,
+                                         protocols, strip, strip_comments)
+-        md.postprocessors.add('bleach', bleach_pp, '>raw_html')
++        # raw_html has priority 30, amp_substitute has priority 20
++        md.postprocessors.register(bleach_pp, 'bleach', 40)
