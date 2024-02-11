@@ -59,6 +59,16 @@ popd
 python -m flask --app gerby run
 ```
 
+# build pypi package
+
+```bash
+python -m build
+python -m pip install --upgrade twine
+export TWINE_USERNAME=__token__
+export TWINE_PASSWORD=pypi-yourSecretToken
+python -m twine upload dist/*
+
+```
 
 # systemctl service configuration
 
