@@ -67,7 +67,7 @@ python -m pip install --upgrade twine
 export TWINE_USERNAME=__token__
 export TWINE_PASSWORD=pypi-yourSecretToken
 python -m twine upload dist/*
-
+rm dist/*
 ```
 
 # systemctl service configuration

@@ -1,9 +1,11 @@
 version: '3'
 services:
   gmt-gerby:
-    image: paolini/gmt-gerby
+    image: gmt-gerby
+    environment:
+      - DATABASE_PATH=/app/db
     volumes:
-      - /db:/app/db
+      - ./db:/app/db
     ports:
       - "8080:8080"
 
