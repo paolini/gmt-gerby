@@ -3,8 +3,7 @@ tmp
 gerby.egg-info
 instance
 venv
-gerby/comments.sqlite
-gerby/stacks.sqlite
+*.sqlite
 *.pyc
 WEB
 gerby/static/css/jquery.bonsai.css

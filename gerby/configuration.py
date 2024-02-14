@@ -10,6 +10,10 @@ DATABASE = os.path.join(DATABASE_PATH, "db.sqlite")
 UNIT = "section"
 DEPTH = 0
 
+# branding
+PROJECT_TITLE = os.environ.get("PROJECT_TITLE", "A Gerby Project")
+PROJECT_DESCRIPTION = os.environ.get("PROJECT_DESCRIPTION", "This should be replaced with a short description of the project")
+
 # configuration for the import
 PATH = "book"
 PAUX = "book.paux"

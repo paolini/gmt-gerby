@@ -11,7 +11,8 @@ from flask import Flask, render_template, request, send_from_directory
 from peewee import *
 from playhouse.sqlite_ext import *
 
-from gerby.configuration import *
+import gerby.configuration
+#from gerby.configuration import *
 from gerby.database import *
 
 db.init(DATABASE)
@@ -116,12 +117,13 @@ def show_index():
       updates=updates,
       statistics=get_statistics(),
       comments=comments,
+      configuration=gerby.configuration,
       )
 
 
 @app.route("/about")
 def show_about():
-  return render_template("single/about.html")
+  return render_template("single/about.html",configuration=gerby.configuration)
 
 
 @app.route("/statistics")
@@ -143,7 +145,7 @@ def show_statistics():
   records["referenced"] = Dependency.select(Dependency.to, fn.COUNT(Dependency.to).alias("value")).group_by(Dependency.to).order_by(fn.COUNT(Dependency.to).desc())[0]
   records["proof"] = Proof.select(Proof.tag, fn.length(Proof.html).alias("value")).order_by(fn.length(Proof.html).desc())[0]
 
-  return render_template("single/statistics.html", total=total, counts=counts, extras=extras, records=records)
+  return render_template("single/statistics.html", total=total, counts=counts, extras=extras, records=records, configuration=gerby.configuration)
 
 
 @app.route("/browse")
@@ -156,14 +158,14 @@ def show_chapters():
     for part in parts:
       part.chapters = sorted([chapter.chapter for chapter in chapters if chapter.part.tag == part.tag])
 
-    return render_template("toc.parts.html", parts=parts)
+    return render_template("toc.parts.html", parts=parts, configuration=gerby.configuration)
 
   # chapter is top-level
   else:
     chapters = Tag.select().where(Tag.type == "chapter")
     chapters = sorted(chapters)
 
-    return render_template("toc.chapters.html", chapters=chapters)
+    return render_template("toc.chapters.html", chapters=chapters, configuration=gerby.configuration)
 
 
 @app.route("/robots.txt")
