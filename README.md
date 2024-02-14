@@ -56,7 +56,7 @@ popd
 # run locally
 
 ```
-python -m flask --app gerby run
+python -m flask --app gerby run --debug
 ```
 
 # build pypi package
@@ -71,6 +71,8 @@ rm dist/*
 ```
 
 # systemctl service configuration
+
+(deprecated: use docker container instead)
 
 In `/etc/systemd/system/gerby.service`
 

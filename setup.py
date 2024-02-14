@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 setup(
     name="gmt-gerby",
     description="flask-based web application for managing a gerby-plastex site",
-    version="0.1.3",
+    version="0.1.4",
     author="Pieter Belmans",
     packages=find_packages(),
     include_package_data=True,

@@ -2,6 +2,7 @@ import datetime
 
 from flask import render_template, request, redirect
 
+from gerby import configuration
 from gerby.application import app
 from gerby.database import *
 from gerby.views.methods import *
@@ -115,7 +116,7 @@ def show_tag(tag):
   tag = tag.upper()
 
   if not isTag(tag):
-    return render_template("tag.invalid.html", tag=tag)
+    return render_template("tag.invalid.html", tag=tag, configuration=configuration)
 
   try:
     tag = (Tag.select(Tag,
@@ -129,7 +130,7 @@ def show_tag(tag):
                 .get())
 
   except Tag.DoesNotExist:
-    return render_template("tag.notfound.html", tag=tag), 404
+    return render_template("tag.notfound.html", tag=tag, configuration=configuration), 404
 
   html = ""
   breadcrumb = getBreadcrumb(tag)
@@ -247,17 +248,18 @@ def show_tag(tag):
                          comments=comments,
                          filename=filename,
                          parentComments=parentComments,
-                         depth=gerby.configuration.DEPTH)
+                         depth=gerby.configuration.DEPTH,
+                         configuration=configuration)
 
 @app.route("/tag/<string:tag>/cite")
 def show_citation(tag):
   if not isTag(tag):
-    return render_template("tag.invalid.html", tag=tag)
+    return render_template("tag.invalid.html", tag=tag, configuration=configuration)
 
   try:
     tag = Tag.get(Tag.tag == tag.upper())
   except Tag.DoesNotExist:
-    return render_template("tag.notfound.html", tag=tag), 404
+    return render_template("tag.notfound.html", tag=tag, configuration=configuration), 404
 
   breadcrumb = getBreadcrumb(tag)
   neighbours = getNeighbours(tag)
@@ -266,17 +268,18 @@ def show_citation(tag):
                          tag=tag,
                          breadcrumb=breadcrumb,
                          neighbours=neighbours,
-                         time=datetime.datetime.utcnow())
+                         time=datetime.datetime.utcnow(), 
+                         configuration=configuration)
 
 @app.route("/tag/<string:tag>/statistics")
 def show_tag_statistics(tag):
   if not isTag(tag):
-    return render_template("tag.invalid.html", tag=tag)
+    return render_template("tag.invalid.html", tag=tag, configuration=configuration)
 
   try:
     tag = Tag.get(Tag.tag == tag.upper())
   except Tag.DoesNotExist:
-    return render_template("tag.notfound.html", tag=tag), 404
+    return render_template("tag.notfound.html", tag=tag, configuration=configuration), 404
 
   breadcrumb = getBreadcrumb(tag)
   neighbours = getNeighbours(tag)
@@ -328,4 +331,5 @@ def show_tag_statistics(tag):
                          update=update,
                          statistics=statistics,
                          filename=tag.label.split("-" + tag.type)[0],
-                         dependencies=tag.incoming)
+                         dependencies=tag.incoming, 
+                         configuration=configuration)

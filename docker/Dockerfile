@@ -8,6 +8,7 @@
 # VERSION=$( grep -i version ../setup.py | cut -f2 -d\")
 # docker tag gmt-gerby paolini/gmt-gerby:latest
 # docker tag gmt-gerby paolini/gmt-gerby:${VERSION}
+# docker login
 # docker push paolini/gmt-gerby:latest 
 # docker push paolini/gmt-gerby:${VERSION}
 

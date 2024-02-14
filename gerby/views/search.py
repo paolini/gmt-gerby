@@ -1,5 +1,6 @@
 from flask import redirect, render_template, request, make_response, request
 
+from gerby import configuration
 from gerby.application import app
 from gerby.views import tag
 from gerby.database import *
@@ -73,7 +74,7 @@ def show_search():
 
   # a) return empty page (for now)
   if "query" not in request.args:
-    return set_cookie(render_template("search.html", count=0, perpage=perpage, radius="all"), perpage)
+    return set_cookie(render_template("search.html", count=0, perpage=perpage, radius="all", configuration=configuration), perpage)
 
 
   # b) if the query is actually a tag we redirect (we say that a string is a tag if is looks like *and* it starts with a digit: maybe that's actually a good rule in general)
@@ -89,7 +90,7 @@ def show_search():
     else:
       tags = [result.tag for result in SearchStatement(SearchStatement.tag).search(request.args["query"])]
   except OperationalError:
-    return set_cookie(render_template("search.malformed.html", query=request.args["query"]), perpage)
+    return set_cookie(render_template("search.malformed.html", query=request.args["query"], configuration=configuration), perpage)
 
 
   # now get all the information about the results
@@ -98,7 +99,7 @@ def show_search():
     count = results.count()
   except peewee.OperationalError as e:
     if "too many SQL variables" in str(e):
-      return set_cookie(render_template("search.html", query=request.args["query"], count=-1), perpage)
+      return set_cookie(render_template("search.html", query=request.args["query"], count=-1, configuration=configuration), perpage)
 
   # sorting and pagination
   results = sorted(results)
@@ -139,4 +140,5 @@ def show_search():
                          misspelt=misspelt,
                          alternative=alternative,
                          radius=radius,
-                         headings=tag.headings), perpage)
+                         headings=tag.headings, 
+                         configuration=configuration), perpage)

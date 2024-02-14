@@ -1,5 +1,6 @@
 from flask import render_template
 
+from gerby import configuration
 from gerby.application import app
 from gerby.database import *
 
@@ -20,14 +21,14 @@ def show_bibliography():
   entries = decorateEntries(entries)
   entries = sorted(entries)
 
-  return render_template("bibliography.overview.html", entries=entries)
+  return render_template("bibliography.overview.html", entries=entries, configuration=configuration)
 
 @app.route("/bibliography/<string:key>")
 def show_entry(key):
   try:
     entry = BibliographyEntry.get(BibliographyEntry.key == key)
   except BibliographyEntry.DoesNotExist:
-    return render_template("bibliography.notfound.html", key=key), 404
+    return render_template("bibliography.notfound.html", key=key, configuration=configuration), 404
 
 
   fields = BibliographyField.select().where(BibliographyField.key == entry.key)
@@ -57,4 +58,5 @@ def show_entry(key):
   return render_template("bibliography.entry.html",
                          entry=entry,
                          neighbours=neighbours,
-                         citations=citations)
+                         citations=citations,
+                         configuration=configuration)

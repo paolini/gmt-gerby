@@ -3,6 +3,7 @@ import hashlib
 from flask import render_template, send_from_directory, redirect
 from datetime import datetime
 
+from gerby import configuration
 from gerby.application import app
 from gerby.database import *
 from gerby.views.methods import *
@@ -25,17 +26,17 @@ def md5_processor():
 
 @app.route("/tags")
 def show_tags():
-  return render_template("single/tags.html")
+  return render_template("single/tags.html", configuration=configuration)
 
 
 @app.route("/todo")
 def show_todo():
-  return render_template("single/todo.html")
+  return render_template("single/todo.html", configuration=configuration)
 
 
 @app.route("/markdown")
 def show_markdown():
-  return render_template("single/markdown.html")
+  return render_template("single/markdown.html", configuration=configuration)
 
 
 @app.route("/acknowledgements")
@@ -48,12 +49,12 @@ def show_acknowledgements():
         continue
       acknowledgements.append(line)
 
-  return render_template("single/acknowledgements.html", acknowledgements=acknowledgements)
+  return render_template("single/acknowledgements.html", acknowledgements=acknowledgements, configuration=configuration)
 
 
 @app.route("/contribute")
 def show_contribute():
-  return render_template("single/contribute.html")
+  return render_template("single/contribute.html", configuration=configuration)
 
 
 @app.route("/contributors")
@@ -67,12 +68,12 @@ def show_contributors():
         continue
       contributors.append(line)
 
-  return render_template("single/contributors.html", contributors=contributors)
+  return render_template("single/contributors.html", contributors=contributors, configuration=configuration)
 
 
 @app.route("/api")
 def show_api():
-  return render_template("single/api.html")
+  return render_template("single/api.html", configuration=configuration)
 
 
 @app.route("/data/tag/<string:tag>/structure")
@@ -216,7 +217,7 @@ def show_topics_graph(tag):
   except Tag.DoesNotExist:
     return "This tag does not exist."
 
-  return render_template("stacks/graph.topics.html", tag=tag)
+  return render_template("stacks/graph.topics.html", tag=tag, configuration=configuration)
 
 
 @app.route("/data/tag/<string:tag>/graph/topics")
@@ -288,7 +289,7 @@ def show_structure_graph(tag):
   except Tag.DoesNotExist:
     return "This tag does not exist."
 
-  return render_template("stacks/graph.structure.html", tag=tag)
+  return render_template("stacks/graph.structure.html", tag=tag, configuration=configuration)
 
 
 @app.route("/data/tag/<string:tag>/graph/structure")
@@ -361,7 +362,7 @@ def show_tree_graph(tag):
   except Tag.DoesNotExist:
     return "This tag does not exist."
 
-  return render_template("stacks/graph.dendrogram.html", tag=tag)
+  return render_template("stacks/graph.dendrogram.html", tag=tag, configuration=configuration)
 
 
 TREE_LEVEL = 4
@@ -404,19 +405,19 @@ def show_tree_data(tag):
 @app.route("/tag/<string:tag>/history")
 def show_history(tag):
   if not gerby.views.tag.isTag(tag):
-    return render_template("tag.invalid.html", tag=tag)
+    return render_template("tag.invalid.html", tag=tag, configuration=configuration)
 
   try:
     tag = Tag.get(Tag.tag == tag)
   except Tag.DoesNotExist:
-    return render_template("tag.notfound.html", tag=tag)
+    return render_template("tag.notfound.html", tag=tag, configuration=configuration)
 
   breadcrumb = gerby.views.tag.getBreadcrumb(tag)
   neighbours = gerby.views.tag.getNeighbours(tag)
 
   # only show history for tags for which we have one
   if tag.type not in ["definition", "example", "exercise", "lemma", "proposition", "remark", "remarks", "situation", "theorem"]:
-    return render_template("tag.history.invalid.html", tag=tag, breadcrumb=breadcrumb)
+    return render_template("tag.history.invalid.html", tag=tag, breadcrumb=breadcrumb, configuration=configuration)
 
   if Change.table_exists():
     changes = Change.select().join(Commit).where(Change.tag == tag).order_by(Commit.time.desc())
@@ -429,10 +430,11 @@ def show_history(tag):
                              changes=changes,
                              filename=tag.label.split("-" + tag.type)[0],
                              breadcrumb=breadcrumb,
-                             neighbours=neighbours)
+                             neighbours=neighbours, 
+                             configuration=configuration)
 
   # this means something went wrong
-  return render_template("tag.history.empty.html", tag=tag, breadcrumb=breadcrumb)
+  return render_template("tag.history.empty.html", tag=tag, breadcrumb=breadcrumb, configuration=configuration)
 
 
 @app.route("/chapter/<int:chapter>")
@@ -440,9 +442,9 @@ def show_chapter_message(chapter):
   try:
     tag = Tag.get(Tag.type == "chapter", Tag.ref == chapter)
 
-    return render_template("tag.chapter.redirect.html", tag=tag)
+    return render_template("tag.chapter.redirect.html", tag=tag, configuration=configuration)
   except DoesNotExist:
-    return render_template("tag.chapter.notfound.html", chapter=chapter)
+    return render_template("tag.chapter.notfound.html", chapter=chapter, configuration=configuration)
 
 
 @app.route("/tex")
@@ -466,5 +468,5 @@ def show_recent_changes():
     commit.time = datetime.datetime.strptime(commit.time.decode(), "%Y-%m-%d %H:%M:%S %z")
     commit.tags = sorted(Tag.select().join(Change).where(Change.commit == commit, Change.action << ["tag", "statement", "proof", "statement and proof"]).distinct())
 
-  return render_template("stacks/changes.html", commits=commits)
+  return render_template("stacks/changes.html", commits=commits, configuration=configuration)
 

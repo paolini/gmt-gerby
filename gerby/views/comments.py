@@ -1,8 +1,10 @@
 from flask import redirect, render_template, request, redirect
 
+from gerby import configuration
 from gerby.application import app
 from gerby.database import *
 from gerby.views.methods import *
+
 
 import validators
 
@@ -12,7 +14,7 @@ def post_comment():
 
   if tag == request.form["tag"] and tag == request.form["check"]:
     if not validators.email(request.form["mail"]):
-      return render_template("comment.invalid-email.html", email=request.form["mail"])
+      return render_template("comment.invalid-email.html", email=request.form["mail"], configuration=configuration)
 
     site = request.form["site"]
     # if site is not a valid url just leave empty
@@ -29,7 +31,7 @@ def post_comment():
     return redirect("/tag/" + request.form["tag"] + "#comment-" + str(comment.id))
 
   else:
-    return render_template("comment.invalid-captcha.html")
+    return render_template("comment.invalid-captcha.html", configuration=configuration)
 
 @app.route("/recent-comments.xml")
 @app.route("/recent-comments.rss")
@@ -43,7 +45,7 @@ def show_comments_feed():
     comment.comment = sfm(comment.comment)
     commentsout.append(comment)
 
-  return render_template("comments.xml", comments=commentsout)
+  return render_template("comments.xml", comments=commentsout, configuration=configuration)
 
 
 @app.route("/recent-comments", defaults={"page": 1})
@@ -73,4 +75,6 @@ def show_comments(page):
       perpage=PERPAGE,
       comments=commentsout,
       count=count,
-      tags=tags)
+      tags=tags,
+      configuration=configuration,
+      )
