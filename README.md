@@ -4,11 +4,17 @@
 * https://github.com/gerby-project/gerby-website
 * https://gerby-project.github.io/stacks-instructions
 * https://github.com/stacks/stacks-project
+* https://github.com/kerodon/kerodon-website
 
 forks:
 
 * https://github.com/paolini/pybtex-gerby
 
+references:
+
+* stacks project website: [https://stacks.math.columbia.edu/]
+* kerodon project website: [https://kerodon.net/]
+* Gerby supports tikz Now: [https://pbelmans.ncag.info/blog/2019/12/21/gerby-supports-tikz/]
 
 # setup static files
 
